@@ -1,8 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
+const demoTickets = [
+  {
+    id: 'DEMO-1042',
+    title: 'Warehouse scanner cannot reach print server',
+    description: 'Handheld inventory scanner reports timeout when contacting the dispatch label print queue.',
+    category: 'Network',
+    priority: 'High',
+    status: 'Open',
+  },
+  {
+    id: 'DEMO-1037',
+    title: 'Finance user locked out after MFA reset',
+    description: 'User cannot complete sign-in after mobile authenticator replacement.',
+    category: 'Account / Access',
+    priority: 'Medium',
+    status: 'Open',
+  },
+  {
+    id: 'DEMO-1029',
+    title: 'Conference room display adapter replaced',
+    description: 'HDMI adapter failure isolated during morning room check.',
+    category: 'Hardware',
+    priority: 'Low',
+    status: 'Resolved',
+    resolution_notes: 'Replaced adapter, verified input detection, and updated room inventory record.',
+  },
+];
+
 function App() {
-  const [tickets, setTickets] = useState([]);
+  const [tickets, setTickets] = useState(demoTickets);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Hardware');
@@ -21,8 +49,12 @@ function App() {
       .select('*')
       .order('created_at', { ascending: false });
     
-    if (error) console.error('Error fetching tickets:', error);
-    else setTickets(data || []);
+    if (error) {
+      console.error('Error fetching tickets:', error);
+      setTickets(demoTickets);
+    } else {
+      setTickets(data && data.length > 0 ? data : demoTickets);
+    }
   }
 
   // Handle lodging a new technical issue
@@ -123,7 +155,7 @@ function App() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           {/* ACTIVE QUEUE */}
           <div>
-            <h2 style={{ color: '#ef4444' }}>⚠️ Active Problems ({activeTickets.length})</h2>
+            <h2 style={{ color: '#ef4444' }}>Active Problems ({activeTickets.length})</h2>
             {activeTickets.length === 0 ? <p>All clear! No active problems logged.</p> : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {activeTickets.map(ticket => (
@@ -145,7 +177,7 @@ function App() {
 
           {/* RESOLVED QUEUE */}
           <div>
-            <h2 style={{ color: '#22c55e' }}>✔️ Resolved History ({resolvedTickets.length})</h2>
+            <h2 style={{ color: '#22c55e' }}>Resolved History ({resolvedTickets.length})</h2>
             {resolvedTickets.length === 0 ? <p>No completed lifecycle history found yet.</p> : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {resolvedTickets.map(ticket => (

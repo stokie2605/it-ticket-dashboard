@@ -2,6 +2,10 @@
 
 A dynamic frontend web dashboard built to track corporate IT support tickets through their complete lifecycle—from initial submission to documented resolution. 
 
+## Dashboard Preview
+
+![IT Ticket Dashboard preview](screenshots/ticket-dashboard-preview.png)
+
 ## Key Features
 * **Live Problem Registration:** Allows support technicians to log hardware, network, and access issues with specific priority and category mappings.
 * **Incident Lifecycles:** Real-time state segmentation displaying active issues versus archived resolution history.
