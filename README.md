@@ -1,5 +1,7 @@
 # IT Service Desk Log & Incident Tracker
 
+[🚀 Live Demo](https://it-ticket-dashboard.vercel.app)
+
 Built by Dean Wilshaw.
 
 IT Service Desk Log & Incident Tracker is a React-based support dashboard for logging, triaging, and resolving internal IT incidents. It models a practical service desk lifecycle: ticket intake, category and priority assignment, active queue visibility, resolution documentation, and resolved-history review.
