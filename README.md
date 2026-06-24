@@ -1,31 +1,139 @@
 # IT Service Desk Log & Incident Tracker
 
-A dynamic frontend web dashboard built to track corporate IT support tickets through their complete lifecycle—from initial submission to documented resolution. 
+Built by Dean Wilshaw.
 
-## Dashboard Preview
+IT Service Desk Log & Incident Tracker is a React-based support dashboard for logging, triaging, and resolving internal IT incidents. It models a practical service desk lifecycle: ticket intake, category and priority assignment, active queue visibility, resolution documentation, and resolved-history review.
+
+The project demonstrates a technician-focused workflow with Supabase-backed persistence, demo ticket fallback data, active/resolved queue separation, and a resolution workbench that requires root-cause notes before closure.
+
+### Visual Output / Preview
 
 ![IT Ticket Dashboard preview](screenshots/ticket-dashboard-preview.png)
 
-## Key Features
-* **Live Problem Registration:** Allows support technicians to log hardware, network, and access issues with specific priority and category mappings.
-* **Incident Lifecycles:** Real-time state segmentation displaying active issues versus archived resolution history.
-* **Resolution Workbench:** An interface component that forces technicians to document root-cause troubleshooting steps before securely closing a ticket.
-* **Cloud Database Backend:** Secured data persistence driven by a cloud-hosted Supabase infrastructure with dedicated relational tables.
+```text
+┌───────────────────────────────┬──────────────┬──────────┬──────────────────┐
+│ Ticket                        │ Category     │ Priority │ Lifecycle State  │
+├───────────────────────────────┼──────────────┼──────────┼──────────────────┤
+│ Warehouse scanner timeout     │ Network      │ High     │ Open             │
+│ Finance MFA lockout           │ Account      │ Medium   │ Open             │
+│ Conference adapter replaced   │ Hardware     │ Low      │ Resolved         │
+└───────────────────────────────┴──────────────┴──────────┴──────────────────┘
+```
 
----
+### Ticket Lifecycle Architecture
 
-## 🛠️ Troubleshooting & Core Resolutions
+- **Demo ticket fallback:** The app initializes with realistic service desk examples so the dashboard remains useful even if Supabase is unavailable.
+- **Supabase ticket fetch:** On load, the frontend queries the `tickets` table ordered by newest `created_at` values.
+- **Incident intake form:** Technicians submit a title, description, category, and priority to create an `Open` ticket.
+- **Queue segmentation:** Tickets are split into active problems and resolved history using their `status` field.
+- **Resolution workbench:** Selecting an active ticket opens a closure form that requires resolution notes before updating the record.
+- **Audit-friendly history:** Resolved tickets retain the original problem description and documented fix action for later review.
 
-During development, deployment, and cloud integration, several standard frontend development and system hurdles were encountered and resolved:
+## The Business Problem
 
-### 1. Terminal Scope & Root Directory Misalignment (`ENOENT`)
-* **Problem:** Running terminal management tasks like `npm run dev` or trying to update packages failed with an `ENOENT` error, indicating missing configuration blueprints (`package.json`).
-* **Resolution:** Diagnosed as a system path context error. Identified via VS Code directory trees that the project directory was initialized in the primary user directory (`C:\Users\Wilshaw\it-ticket-dashboard`) rather than subfolders. Resolved by running targeted directory navigation commands (`cd it-ticket-dashboard`) to correctly align the shell workspace before execution.
+Service desks need a consistent way to track internal support work from first report through resolution. Without a structured ticket lifecycle, incidents can be missed, repeated fixes are hard to review, and technicians may close work without documenting what actually solved the issue.
 
-### 2. Isolated Dependency Installation Scope
-* **Problem:** The system build engine crashed on launch with a red screen error stating `[plugin:vite:import-analysis] Failed to resolve import "@supabase/supabase-js"`.
-* **Resolution:** Discovered that the primary database helper library had been accidentally executed and downloaded in the global home directory rather than the target project folder. Pushed a direct resolution by navigating the target shell inside the project folder root and running a local scope installation (`npm install @supabase/supabase-js`), immediately populating the local node modules.
+Common operational problems include:
 
-### 3. Build Tool Hot Module Cache Lock
-* **Problem:** The terminal framework failed to recognize newly installed internal components even after local dependency files were fixed.
-* **Resolution:** Isolated as a standard Vite builder caching hold. Resolved by executing a hard termination sequence (`Ctrl + C`) to clear the build instance and running a clean engine reboot (`npm run dev`), forcing the system to re-verify the active file map.
+- Hardware, network, and access problems arrive through scattered channels.
+- Priority and category handling is inconsistent between technicians.
+- Active issues and completed work are difficult to separate at a glance.
+- Resolution notes are skipped when closure is informal.
+- Managers lack simple evidence of troubleshooting work performed.
+- Cloud availability issues can leave a dashboard empty without fallback data.
+
+## The Solution & Architecture
+
+The dashboard models a lightweight ticket management system:
+
+```text
+Technician Incident Form
+          |
+          v
+Supabase tickets Insert
+          |
+          v
+Ticket Queue State
+          |
+          +--> Active Problems
+          |
+          +--> Resolution Workbench
+                    |
+                    v
+             Supabase status update
+                    |
+                    v
+              Resolved History
+```
+
+## Technical Toolkit
+
+- React
+- Vite
+- JavaScript
+- Supabase JavaScript client
+- Supabase PostgreSQL
+- React hooks
+- Browser-based service desk UI
+
+## Local Execution Setup
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Ticket Data Model
+
+The frontend expects a `tickets` table with fields similar to:
+
+```text
+id                Unique ticket identifier
+title             Short issue summary
+description       Technician-readable issue details
+category          Hardware, Network, or Account / Access
+priority          Low, Medium, or High
+status            Open or Resolved
+resolution_notes  Root-cause fix documentation
+created_at        Ticket creation timestamp
+```
+
+Example ticket:
+
+```json
+{
+  "title": "Finance user locked out after MFA reset",
+  "description": "User cannot complete sign-in after mobile authenticator replacement.",
+  "category": "Account / Access",
+  "priority": "Medium",
+  "status": "Open"
+}
+```
+
+## Production Readiness Notes
+
+- Move Supabase URL and publishable key into environment variables before production deployment.
+- Add authenticated roles for technician, resolver, and service desk manager access.
+- Add SLA timers and escalation rules based on priority.
+- Add ticket comments, attachments, and assignment ownership.
+- Add audit timestamps for status changes and resolution events.
+- Add tests for ticket creation, queue filtering, and resolution validation.
