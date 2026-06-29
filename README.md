@@ -1,6 +1,6 @@
 # IT Service Desk Log & Incident Tracker
 
-[🚀 Live Demo](https://it-ticket-dashboard.vercel.app)
+[Live Demo](https://it-ticket-dashboard.vercel.app)
 
 Built by Dean Wilshaw.
 
@@ -12,15 +12,11 @@ The project demonstrates a technician-focused workflow with Supabase-backed pers
 
 ![IT Ticket Dashboard preview](screenshots/ticket-dashboard-preview.png)
 
-```text
-┌───────────────────────────────┬──────────────┬──────────┬──────────────────┐
-│ Ticket                        │ Category     │ Priority │ Lifecycle State  │
-├───────────────────────────────┼──────────────┼──────────┼──────────────────┤
-│ Warehouse scanner timeout     │ Network      │ High     │ Open             │
-│ Finance MFA lockout           │ Account      │ Medium   │ Open             │
-│ Conference adapter replaced   │ Hardware     │ Low      │ Resolved         │
-└───────────────────────────────┴──────────────┴──────────┴──────────────────┘
-```
+| Ticket | Category | Priority | Lifecycle State |
+| --- | --- | --- | --- |
+| Warehouse scanner timeout | Network | High | Open |
+| Finance MFA lockout | Account | Medium | Open |
+| Conference adapter replaced | Hardware | Low | Resolved |
 
 ### Ticket Lifecycle Architecture
 
@@ -139,3 +135,9 @@ Example ticket:
 - Add ticket comments, attachments, and assignment ownership.
 - Add audit timestamps for status changes and resolution events.
 - Add tests for ticket creation, queue filtering, and resolution validation.
+
+## Reviewer Setup Notes
+
+- Environment template: [.env.example](.env.example)
+- Ticket lifecycle doc: [docs/TICKET_LIFECYCLE.md](docs/TICKET_LIFECYCLE.md)
+- The app includes fallback demo data when Supabase is not configured.
