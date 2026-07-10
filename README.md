@@ -1,5 +1,6 @@
 # IT Ticket Dashboard
 > **The 1-Line Mission:** React-based incident management dashboard integrating Supabase database triggers to log, classify, and audit helpdesk support tickets.
+> **Live Demo:** [it-ticket-dashboard.vercel.app](https://it-ticket-dashboard.vercel.app)
 
 ### ⚡ Engineering Breakdown
 * **The Problem:** Helpdesk operations suffer from disorganized ticket lifecycles, non-standardized classification structures, and missing resolution audits when tasks are closed without root-cause documentation.
